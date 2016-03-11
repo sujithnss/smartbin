@@ -1,0 +1,2 @@
+# smartbin
+SmartBin API
