@@ -7,12 +7,12 @@
 var express    = require('express');        // call express
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
-var smartbinrouter = require('../router/smartbinrouter');
-var customerrouter = require('../router/customerrouter');
-var productrouter = require('../router/productrouter');
-var triggeractionrouter = require('../router/triggeractionrouter');
-var notificationrouter = require('../router/notificationrouter');
-var basketrouter = require('../router/basketrouter');
+var smartbinrouter = require('./router/smartbinrouter');
+var customerrouter = require('./router/customerrouter');
+var productrouter = require('./router/productrouter');
+var triggeractionrouter = require('./router/triggeractionrouter');
+var notificationrouter = require('./router/notificationrouter');
+var basketrouter = require('./router/basketrouter');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
