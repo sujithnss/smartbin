@@ -70,8 +70,8 @@ exports.getBasketByCustomerId = function(req,resp)
                                 }
                   else
                                 {
-                          resp.writeHead(200,{"Content-Type" : "application/json"});
-                                  resp.write(JSON.stringify(data));
+                          resp.type('application/json');
+                                  resp.send(data[0]);
                           resp.end();
                                 }
                 }
