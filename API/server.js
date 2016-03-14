@@ -7,6 +7,7 @@
 var express    = require('express');        // call express
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
+var cors = require('cors');
 var smartbinrouter = require('./router/smartbinrouter');
 var customerrouter = require('./router/customerrouter');
 var productrouter = require('./router/productrouter');
@@ -18,6 +19,7 @@ var basketrouter = require('./router/basketrouter');
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors());
 
 var port = process.env.PORT || 9000;        // set our port
 
