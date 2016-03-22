@@ -25,6 +25,30 @@ exports.selectSmartBinById = function(smartbinid,callback)
                 );
 };
 
+exports.getSmartBinByCutsomerId = function(customerid,callback)
+{
+                var conn = new sqlDb.Connection(settings.dbConfig);
+                conn.connect()
+                .then(function()
+                {
+                                var request = new sqlDb.Request(conn);
+                                request.input('CustomerId', sqlDb.Int, customerid);
+                                request.execute('SmartBinGetAll').then(function(recordsets) {
+                                                callback(recordsets);
+                                }).catch(function(err) {
+                                                // ... error checks
+                                                console.log(err);
+                                });
+                }
+                )
+
+                .catch(function(err) {
+                console.log(err);
+                callback(null,err);
+                }
+                );
+};
+
 exports.insertSmartBin = function(smartbin,callback)
 {
 

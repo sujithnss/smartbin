@@ -12,6 +12,10 @@ smartbinrouter.get('/smartbin/:id', function(req, res) {
     smartbinprovider.getSmartBinById(req,res);
 });
 
+smartbinrouter.get('/smartbin/all/:id', function(req, res) {
+    smartbinprovider.getSmartBinByCutsomerId(req,res);
+});
+
 smartbinrouter.post('/smartbin',function(req,res)
 {
    smartbinprovider.addSmartBin(req,res);
