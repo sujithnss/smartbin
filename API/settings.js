@@ -1,7 +1,7 @@
 exports.dbConfig = {
-user: "sujith",
-password: "change123#",
-server:"localhost",
+user: "smartbinuser",
+password: "Sapient20!^",
+server:"barcamp2016.cjufhjryxtvf.us-west-2.rds.amazonaws.com",
 database:"SmartBin",
 port:1433
 }
