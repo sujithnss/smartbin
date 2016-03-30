@@ -41,6 +41,26 @@ exports.getSmartBinByCutsomerId = function(req,resp)
                 );
 };
 
+exports.getSmartBinLogById = function(req,resp)
+{
+                repository.getSmartBinLogById(req.params.id,function(data, err)
+                {
+                  if(err)
+                                {
+                                  resp.writeHead(500,"Internal Error", {"Content-Type" : "text/html"});
+                                  resp.write(err);
+                          resp.end();
+                                }
+                  else
+                                {
+                          resp.type('application/json');
+                                  resp.send(data[0]);
+                          resp.end();
+                                }
+                }
+                );
+};
+
 exports.addSmartBin = function(req,resp)
 {
 try

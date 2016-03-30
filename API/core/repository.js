@@ -49,6 +49,31 @@ exports.getSmartBinByCutsomerId = function(customerid,callback)
                 );
 };
 
+exports.getSmartBinLogById = function(id,callback)
+{
+                var conn = new sqlDb.Connection(settings.dbConfig);
+                conn.connect()
+                .then(function()
+                {
+                                var request = new sqlDb.Request(conn);
+                                request.input('SmartBinId', sqlDb.VarChar(4000), id);
+                                request.execute('SmartBinLogGetById').then(function(recordsets) {
+                                                callback(recordsets);
+                                }).catch(function(err) {
+                                                // ... error checks
+                                                console.log(err);
+                                });
+                }
+                )
+
+                .catch(function(err) {
+                console.log(err);
+                callback(null,err);
+                }
+                );
+};
+
+
 exports.insertSmartBin = function(smartbin,callback)
 {
 
