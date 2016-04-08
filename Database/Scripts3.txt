@@ -1,0 +1,291 @@
+ALTER TABLE dbo.Customer
+ADD [Password] NVARCHAR(150)
+
+go
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[CustomerInsert]    Script Date: 04/08/2016 10:05:07 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:                            <Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:   <Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[CustomerInsert]
+                -- Add the parameters for the stored procedure here
+                                                @FirstName varchar(150)
+           ,@LastName varchar(150)
+           ,@Email varchar(150)
+           ,@Password varchar(150)
+AS
+BEGIN
+                -- SET NOCOUNT ON added to prevent extra result sets from
+                -- interfering with SELECT statements.
+                SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+                INSERT INTO [dbo].[Customer]
+           ([FirstName]
+           ,[LastName]
+           ,[Email],[Password]
+                                   ,[CreatedDateTime]
+           )
+     VALUES
+           (@FirstName
+           ,@LastName
+           ,@Email,@Password
+                                                ,GETUTCDATE()
+           )
+END
+
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[CustomerAuthenticate]    Script Date: 04/08/2016 10:58:36 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[CustomerAuthenticate]
+	-- Add the parameters for the stored procedure here
+	@Email varchar(150)
+           ,@Password varchar(150)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT [CustomerID]
+      ,[FirstName]
+      ,[LastName]
+      ,[Email]
+  FROM [dbo].[Customer] WHERE
+  [Email] = @Email AND
+  [Password] = @Password
+END
+
+GO
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[SmartBinInsert]    Script Date: 04/08/2016 19:06:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:                            <Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:   <Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[SmartBinInsert]
+                -- Add the parameters for the stored procedure here
+
+                                @Id NVARCHAR(4000),
+        @ProductId int,
+        @ReOrderLevel int,
+        @OrderQuantity int,
+        @CustomerId int,
+        @TriggerActionId int
+AS
+BEGIN
+                -- SET NOCOUNT ON added to prevent extra result sets from
+                -- interfering with SELECT statements.
+                SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+                INSERT INTO [dbo].[SmartBin]
+           ([Id]
+           ,[ProductId]
+           ,[ReOrderLevel]
+           ,[OrderQuantiity]
+           ,[CustomerId]
+           ,[TriggerActionId])
+     VALUES
+           (@Id
+           ,@ProductId
+           ,@ReOrderLevel
+           ,@OrderQuantity
+           ,@CustomerId
+           ,@TriggerActionId)
+END
+
+Go
+
+EXEC sp_RENAME 'dbo.SmartBin.OrderQuantiity', 'OrderQuantity', 'COLUMN'
+
+GO
+
+GO
+/****** Object:  StoredProcedure [dbo].[SmartBinGetAll]    Script Date: 04/08/2016 19:11:42 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[SmartBinGetAll]
+	-- Add the parameters for the stored procedure here
+	@CustomerId INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT [Id]
+      ,[ProductId]
+      ,[ReOrderLevel]
+      ,[OrderQuantity]
+      ,[CustomerId]
+      ,[TriggerActionId]
+  FROM [dbo].[SmartBin]
+  WHERE [CustomerId] = @CustomerId
+END
+
+
+GO
+
+GO
+/****** Object:  StoredProcedure [dbo].[SmartBinGetById]    Script Date: 04/08/2016 19:12:17 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:                            <Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:   <Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[SmartBinGetById]
+                -- Add the parameters for the stored procedure here
+                @Id NVARCHAR(4000)
+AS
+BEGIN
+                -- SET NOCOUNT ON added to prevent extra result sets from
+                -- interfering with SELECT statements.
+                SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+                SELECT [Id]
+      ,[ProductId]
+      ,[ReOrderLevel]
+      ,[OrderQuantity]
+      ,[CustomerId]
+      ,[TriggerActionId]
+  FROM [dbo].[SmartBin] WHERE [Id] = @Id
+END
+
+GO
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[SmartBinInsert]    Script Date: 04/08/2016 19:13:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:                            <Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:   <Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[SmartBinInsert]
+                -- Add the parameters for the stored procedure here
+
+                                @Id NVARCHAR(4000),
+        @ProductId int,
+        @ReOrderLevel int,
+        @OrderQuantity int,
+        @CustomerId int,
+        @TriggerActionId int
+AS
+BEGIN
+                -- SET NOCOUNT ON added to prevent extra result sets from
+                -- interfering with SELECT statements.
+                SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+                INSERT INTO [dbo].[SmartBin]
+           ([Id]
+           ,[ProductId]
+           ,[ReOrderLevel]
+           ,[OrderQuantity]
+           ,[CustomerId]
+           ,[TriggerActionId])
+     VALUES
+           (@Id
+           ,@ProductId
+           ,@ReOrderLevel
+           ,@OrderQuantity
+           ,@CustomerId
+           ,@TriggerActionId)
+END
+
+
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[BasketLineGet]    Script Date: 04/08/2016 19:28:51 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[BasketLineGet] 
+	-- Add the parameters for the stored procedure here
+	@CustomerId INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT bl.ProductId , bl.Quantity
+	FROM Basket b INNER JOIN
+	BasketLine bl on b.Id = bl.BasketId
+	WHERE
+	b.CustomerId = @CustomerId AND
+	b.IsActive = 1
+END
+
+GO
+
+
+
+
+
+
+
+
+

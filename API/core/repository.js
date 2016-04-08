@@ -85,7 +85,7 @@ var conn = new sqlDb.Connection(settings.dbConfig);
                                 request.input('Id', sqlDb.VarChar(1000), smartbin.Id);
                                 request.input('ProductId', sqlDb.Int, smartbin.ProductId);
                                 request.input('ReOrderLevel', sqlDb.Int, smartbin.ReOrderLevel);
-                                request.input('OrderQuantiity', sqlDb.Int, smartbin.OrderQuantiity);
+                                request.input('OrderQuantity', sqlDb.Int, smartbin.OrderQuantity);
                                 request.input('CustomerId', sqlDb.Int, smartbin.CustomerId);
                                 request.input('TriggerActionId', sqlDb.Int, smartbin.TriggerActionId);
 
@@ -119,6 +119,7 @@ var conn = new sqlDb.Connection(settings.dbConfig);
                                 request.input('FirstName', sqlDb.VarChar(150), customer.FirstName);
                                 request.input('LastName', sqlDb.VarChar(150), customer.LastName);
                                 request.input('Email', sqlDb.VarChar(150), customer.Email);
+                                request.input('Password', sqlDb.VarChar(150), customer.Password);
 
 
                                 request.execute('CustomerInsert').then(function(recordsets) {
@@ -162,6 +163,32 @@ exports.getCustomerById = function(customerid,callback)
                 }
                 );
 };
+
+exports.customerAuthenticate = function(customer,callback)
+{
+                var conn = new sqlDb.Connection(settings.dbConfig);
+                conn.connect()
+                .then(function()
+                {
+                                var request = new sqlDb.Request(conn);
+                                request.input('Email', sqlDb.VarChar(150), customer.Email);
+                                request.input('Password', sqlDb.VarChar(150), customer.Password);
+                                request.execute('CustomerAuthenticate').then(function(recordsets) {
+                                                callback(recordsets);
+                                }).catch(function(err) {
+                                                // ... error checks
+                                                console.log(err);
+                                });
+                }
+                )
+
+                .catch(function(err) {
+                console.log(err);
+                callback(null,err);
+                }
+                );
+};
+
 
 exports.getProducts = function(callback)
 {
@@ -302,6 +329,36 @@ var conn = new sqlDb.Connection(settings.dbConfig);
                 );
 };
 
+exports.createBasketLine = function(basket,callback)
+{
+
+var conn = new sqlDb.Connection(settings.dbConfig);
+                conn.connect()
+                .then(function()
+                {
+                                var request = new sqlDb.Request(conn);
+                                request.input('BasketId', sqlDb.Int, basket.BasketId);
+                                request.input('ProductId', sqlDb.Int, basket.ProductId);
+                                request.input('Quantity', sqlDb.Int, basket.Quantity);
+
+                                request.execute('BasketLineInsert').then(function(recordsets) {
+
+                                                //console.dir(recordsets);
+                                                callback(recordsets);
+                                }).catch(function(err) {
+                                                // ... error checks
+                                                console.log(err);
+                                });
+                }
+                )
+
+                .catch(function(err) {
+                console.log(err);
+                callback(null,err);
+                }
+                );
+};
+
 exports.getBasketByCustomerId = function(customerid,callback)
 {
                 var conn = new sqlDb.Connection(settings.dbConfig);
@@ -311,6 +368,30 @@ exports.getBasketByCustomerId = function(customerid,callback)
                                 var request = new sqlDb.Request(conn);
                                 request.input('CustomerId', sqlDb.Int, customerid);
                                 request.execute('BasketGet').then(function(recordsets) {
+                                                callback(recordsets);
+                                }).catch(function(err) {
+                                                // ... error checks
+                                                console.log(err);
+                                });
+                }
+                )
+
+                .catch(function(err) {
+                console.log(err);
+                callback(null,err);
+                }
+                );
+};
+
+exports.getBasketLine = function(customerid,callback)
+{
+                var conn = new sqlDb.Connection(settings.dbConfig);
+                conn.connect()
+                .then(function()
+                {
+                                var request = new sqlDb.Request(conn);
+                                request.input('CustomerId', sqlDb.Int, customerid);
+                                request.execute('BasketLineGet').then(function(recordsets) {
                                                 callback(recordsets);
                                 }).catch(function(err) {
                                                 // ... error checks

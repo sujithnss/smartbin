@@ -18,4 +18,14 @@ basketrouter.post('/basket',function(req,res)
    basketprovider.createBasket(req,res);
 });
 
+basketrouter.post('/basketline',function(req,res)
+{
+   basketprovider.createBasketLine(req,res);
+});
+
+basketrouter.get('/basketline/:id',function(req,res)
+{
+   basketprovider.getBasketLine(req,res);
+});
+
 module.exports = basketrouter;

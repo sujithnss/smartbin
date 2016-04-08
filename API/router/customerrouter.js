@@ -20,4 +20,10 @@ customerrouter.post('/customer',function(req,res)
    customerprovider.addCustomer(req,res);
 });
 
+customerrouter.post('/customer/authenticate',function(req,res)
+{
+	
+   customerprovider.customerAuthenticate(req,res);
+});
+
 module.exports = customerrouter;

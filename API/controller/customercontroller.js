@@ -23,6 +23,64 @@ exports.getCustomerById = function(req,resp)
                 );
 };
 
+exports.customerAuthenticate = function(req,resp)
+{
+try
+{
+  
+     var jsonString = '';
+     var data = '';
+
+        req.on('data', function (data) {
+            jsonString += data;
+        });
+
+        req.on('end', function () {
+            //console.log(JSON.parse(jsonString));
+            data = JSON.parse(jsonString);
+
+
+            if(!data) throw new Error("Input not valid");
+
+                if(data)
+                {
+
+
+                  repository.customerAuthenticate(data,function(data,err)
+                                {
+                                                if(err)
+                                                {
+                                                  resp.writeHead(500,"Internal Error", {"Content-Type" : "application/json"});
+                                      resp.write(err);
+                          resp.end();
+                                                }
+                                                else
+                                                {
+                                                  resp.send(data[0]);
+                                                               // resp.writeHead(200,{"Content-Type" : "application/json"});
+
+
+                          resp.end();
+                                                }
+                                }
+                  );
+                }
+                else
+                {
+                                throw new Error("Input not valid");
+                }
+
+        });
+
+
+
+}
+catch(ex)
+{
+                console.log(ex);
+}
+};
+
 exports.addCustomer = function(req,resp)
 {
 try
