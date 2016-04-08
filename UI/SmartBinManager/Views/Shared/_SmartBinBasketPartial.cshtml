@@ -1,0 +1,8 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    <ul class="nav navbar-nav">
+        <li>@Html.ActionLink("List SmartBin", "ListSmartBin", "Home")</li>
+        <li>@Html.ActionLink("View Basket", "ViewBasket", "Home")</li>
+    </ul>
+}
