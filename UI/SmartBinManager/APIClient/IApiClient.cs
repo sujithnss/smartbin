@@ -10,6 +10,12 @@ namespace SmartBinManager.APIClient
 {
     public interface IApiClient
     {
-        Customer AuthenticateCustomer(LoginViewModel model);
+        Task<List<Product>> GetProducts();
+        Task<List<SmartBinViewModel>> ListSmartBins(int customerId);
+        Task<List<BasketLineViewModel>> ListBasketItems(int customerId);
+        Task<bool> RegisterSmartBin(SmartBinViewModel model);
+        Task<Customer> Authenticate(LoginViewModel model);
+        Task<bool> RegisterCustomer(RegisterViewModel model);
+        Task<List<TriggerAction>> ListTriggerActions();
     }
 }

@@ -14,7 +14,7 @@ namespace SmartBinManager.Controllers
 {
     public class UserAccountController : Controller
     {
-        static readonly APIClient.IApiClient RestClient = new APIClient.APIClient();
+        APIClient.IApiClient RestClient = new APIClient.APIClient();
         //
         // GET: /Account/Register
         [AllowAnonymous]
@@ -32,42 +32,13 @@ namespace SmartBinManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                string url = ConfigurationManager.AppSettings["SmartBinAPI"].ToString() + "customer";
-
-                using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
-                {
-                    client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    string json = JsonConvert.SerializeObject(model);
-                    System.Net.Http.HttpResponseMessage response = await client.PostAsync(url, new StringContent(json));
-                    if (response.IsSuccessStatusCode)
+                
+                    if (await RestClient.RegisterCustomer(model))
                     {
-                        var customer = new Customer();
-
-
-                        url = url + "/authenticate";
-
-                        using (System.Net.Http.HttpClient clientauth = new System.Net.Http.HttpClient())
-                        {
-                            clientauth.BaseAddress = new Uri(url);
-                            clientauth.DefaultRequestHeaders.Accept.Clear();
-                            clientauth.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                            string jsonauth = JsonConvert.SerializeObject(model);
-                            System.Net.Http.HttpResponseMessage responseauth = await client.PostAsync(url, new StringContent(jsonauth));
-                            if (responseauth.IsSuccessStatusCode)
-                            {
-                                var data = await responseauth.Content.ReadAsStringAsync();
-                                var customerdata = Newtonsoft.Json.JsonConvert.DeserializeObject<Customer[]>(data);
-
-                                customer.CustomerID = customerdata[0].CustomerID;
-                                customer.FirstName = customerdata[0].FirstName;
-                                customer.LastName = customerdata[0].LastName;
-                                customer.Email = customerdata[0].Email;
-
-                            }
-                        }
-
+                        LoginViewModel loginModel = new LoginViewModel();
+                        loginModel.Email = model.Email;
+                        loginModel.Password = model.Password;
+                        var customer = await RestClient.Authenticate(loginModel);
                         if (customer != null)
                         {
                             CustomPrincipalSerializeModel serializeModel = new CustomPrincipalSerializeModel();
@@ -82,7 +53,7 @@ namespace SmartBinManager.Controllers
                         }
 
                     }
-                }
+                
             }
 
             // If we got this far, something failed, redisplay form
@@ -107,31 +78,9 @@ namespace SmartBinManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                var customer = new Customer();
-                string url = ConfigurationManager.AppSettings["SmartBinAPI"].ToString() + "customer/authenticate";
-
-                using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
-                {
-                    client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    string json = JsonConvert.SerializeObject(model);
-                    System.Net.Http.HttpResponseMessage response = await client.PostAsync(url, new StringContent(json));
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        var customerdata = Newtonsoft.Json.JsonConvert.DeserializeObject<Customer[]>(data);
-
-                        customer.CustomerID = customerdata[0].CustomerID;
-                        customer.FirstName = customerdata[0].FirstName;
-                        customer.LastName = customerdata[0].LastName;
-                        customer.Email = customerdata[0].Email;
-
-
-                    }
-                }
+                var customer = await RestClient.Authenticate(model);
                 
-                if (customer != null)
+                if (customer != null && customer.CustomerID >0)
                 {
                     CustomPrincipalSerializeModel serializeModel = new CustomPrincipalSerializeModel();
                     serializeModel.CustomerID = customer.CustomerID;
@@ -140,7 +89,9 @@ namespace SmartBinManager.Controllers
                     serializeModel.Email = customer.Email;
                     
                     Response.Cookies.Add(Utility.Utility.EncryptAndSet(serializeModel));
+                    
                     return RedirectToAction("Index", "Home");
+                    
 
                 }
 

@@ -28,7 +28,9 @@ namespace SmartBinManager.Security
             else
             {
                 filterContext.Result = new RedirectToRouteResult(new
-                    RouteValueDictionary(new { controller = "Error", action = "AccessDenied" }));
+                   RouteValueDictionary(new { controller = "Error", action = "AccessDenied" }));
+                //filterContext.Result = new RedirectToRouteResult(new
+                //    RouteValueDictionary(new { controller = "UserAccount", action = "Login"}));
             }
            
         }

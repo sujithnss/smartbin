@@ -12,11 +12,14 @@ using System.Data.Entity.Infrastructure;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Net.Http;
+using SmartBinManager.Entities;
 
 namespace SmartBinManager.Controllers
 {
     public class HomeController : Controller
     {
+        APIClient.IApiClient RestClient = new APIClient.APIClient();
+
         public ActionResult Index()
         {
             return View();
@@ -26,62 +29,41 @@ namespace SmartBinManager.Controllers
         public async System.Threading.Tasks.Task<ActionResult> ListSmartBin()
         {
             ViewBag.Message = "Lists the SmartBins";
-
-            string url = ConfigurationManager.AppSettings["SmartBinAPI"].ToString()+"smartbin/all/";
             
-            url = url + Utility.Utility.DecryptAndGetCustomPrincipal(Request.Cookies[FormsAuthentication.FormsCookieName]).CustomerID.ToString();
+            List<Product> products = await RestClient.GetProducts();
+            List<TriggerAction> triggerActions = await RestClient.ListTriggerActions();
 
-            using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
+            List<SmartBinViewModel> smartBins = await RestClient.ListSmartBins(Utility.Utility.DecryptAndGetCustomPrincipal(Request.Cookies[FormsAuthentication.FormsCookieName]).CustomerID);
+            foreach(SmartBinViewModel sbModel in smartBins)
             {
-                client.BaseAddress = new Uri(url);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                System.Net.Http.HttpResponseMessage response = await client.GetAsync(url);
-                
-                if (response.IsSuccessStatusCode)
-                {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var smartbins = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<SmartBinViewModel>>(data);
-
-                    return View(await smartbins.AsQueryable().ToListAsync());
-
-                }
+                sbModel.ProductName = products.Where(x => x.Id == sbModel.ProductId).FirstOrDefault() != null ? products.Where(x => x.Id == sbModel.ProductId).FirstOrDefault().Name : "";
+                sbModel.TriggerActionName = triggerActions.Where(x => x.Id == sbModel.TriggerActionId).FirstOrDefault() != null ? triggerActions.Where(x => x.Id == sbModel.TriggerActionId).FirstOrDefault().Action : "";
             }
-
-            return View();
+            return View(smartBins);
         }
 
         [CustomAuthorize]
         public async System.Threading.Tasks.Task<ActionResult> ViewBasket()
         {
             ViewBag.Message = "View your Basket";
-            string url = ConfigurationManager.AppSettings["SmartBinAPI"].ToString() + "basketline/";
+            List<Product> products = await RestClient.GetProducts();
 
-            url = url + Utility.Utility.DecryptAndGetCustomPrincipal(Request.Cookies[FormsAuthentication.FormsCookieName]).CustomerID.ToString();
-
-            using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
+            List<BasketLineViewModel> basketLines = await RestClient.ListBasketItems(Utility.Utility.DecryptAndGetCustomPrincipal(Request.Cookies[FormsAuthentication.FormsCookieName]).CustomerID);
+            foreach(BasketLineViewModel basket in basketLines)
             {
-                client.BaseAddress = new Uri(url);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                System.Net.Http.HttpResponseMessage response = await client.GetAsync(url);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var basketlines = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<BasketLineViewModel>>(data);
-
-                    return View(await basketlines.AsQueryable().ToListAsync());
-
-                }
+                basket.ProductName = products.Where(x => x.Id == basket.ProductId).FirstOrDefault().Name != null ? products.Where(x => x.Id == basket.ProductId).FirstOrDefault().Name : "";
             }
-            return View();
+            return View(basketLines);
         }
 
         [CustomAuthorize]
-        public ActionResult RegisterSmartBin()
+        public async Task<ActionResult> RegisterSmartBin()
         {
-            
+            List<Product> products = await RestClient.GetProducts();
+            List<TriggerAction> triggerActions = await RestClient.ListTriggerActions();
+
+            ViewBag.ProductId = new SelectList(products, "Id", "Name");
+            ViewBag.TriggerActionId = new SelectList(triggerActions,"Id","Action");
             return View();
         }
 
@@ -91,41 +73,20 @@ namespace SmartBinManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                string url = ConfigurationManager.AppSettings["SmartBinAPI"].ToString() + "smartbin";
                 model.CustomerId = Utility.Utility.DecryptAndGetCustomPrincipal(Request.Cookies[FormsAuthentication.FormsCookieName]).CustomerID;
-                using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
+                if (await RestClient.RegisterSmartBin(model))
                 {
-                    client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    string json = JsonConvert.SerializeObject(model);
-                    System.Net.Http.HttpResponseMessage response = await client.PostAsync(url, new StringContent(json));
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return RedirectToAction("ListSmartBin", "Home");
-                    }
+                    return RedirectToAction("ListSmartBin", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
                 }
             }
             return View(model);
         }
-    }
 
-    static class Utils
-    {
-
-        /// <summary>
-        /// Async create of a System.Collections.Generic.List<T> from an 
-        /// System.Collections.Generic.IQueryable<T>.
-        /// </summary>
-        /// <typeparam name="T">The type of the elements of source.</typeparam>
-        /// <param name="list">The System.Collections.Generic.IEnumerable<T> 
-        /// to create a System.Collections.Generic.List<T> from.</param>
-        /// <returns> A System.Collections.Generic.List<T> that contains elements 
-        /// from the input sequence.</returns>
-        public static Task<List<T>> ToListAsync<T>(this IQueryable<T> list)
-        {
-            return Task.Run(() => list.ToList());
-        }
 
     }
+    
 }

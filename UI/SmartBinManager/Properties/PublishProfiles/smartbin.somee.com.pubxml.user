@@ -77,7 +77,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/08/2016 08:31:52</publishTime>
     </File>
     <File Include="bin/SmartBinManager.dll">
-      <publishTime>04/08/2016 20:13:56</publishTime>
+      <publishTime>04/09/2016 16:05:59</publishTime>
     </File>
     <File Include="bin/SmartBinManager.pdb">
       <publishTime>04/08/2016 20:40:55</publishTime>
@@ -134,7 +134,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/08/2016 08:31:46</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>04/08/2016 18:13:21</publishTime>
+      <publishTime>04/09/2016 12:19:39</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
       <publishTime>04/08/2016 08:31:47</publishTime>
@@ -179,16 +179,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/08/2016 12:18:30</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>04/08/2016 12:36:34</publishTime>
+      <publishTime>04/09/2016 15:12:58</publishTime>
     </File>
     <File Include="Views/Home/ListSmartBin.cshtml">
-      <publishTime>04/08/2016 15:57:16</publishTime>
+      <publishTime>04/09/2016 16:31:01</publishTime>
     </File>
     <File Include="Views/Home/RegisterSmartBin.cshtml">
-      <publishTime>04/08/2016 18:38:47</publishTime>
+      <publishTime>04/09/2016 15:42:39</publishTime>
     </File>
     <File Include="Views/Home/ViewBasket.cshtml">
-      <publishTime>04/08/2016 19:45:07</publishTime>
+      <publishTime>04/09/2016 16:32:12</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>04/08/2016 08:31:51</publishTime>
@@ -197,7 +197,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/08/2016 08:31:51</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>04/08/2016 11:49:42</publishTime>
+      <publishTime>04/09/2016 15:12:35</publishTime>
     </File>
     <File Include="Views/Shared/_LoginPartial.cshtml">
       <publishTime>04/08/2016 12:12:19</publishTime>
@@ -212,13 +212,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/08/2016 10:00:17</publishTime>
     </File>
     <File Include="Views/Web.config">
-      <publishTime>04/08/2016 20:23:40</publishTime>
+      <publishTime>04/08/2016 08:31:46</publishTime>
     </File>
     <File Include="Views/_ViewStart.cshtml">
       <publishTime>04/08/2016 08:31:46</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>04/08/2016 20:23:40</publishTime>
+      <publishTime>04/09/2016 15:46:13</publishTime>
     </File>
   </ItemGroup>
 </Project>

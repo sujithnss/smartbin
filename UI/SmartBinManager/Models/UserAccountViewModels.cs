@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SmartBinManager.Entities;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -65,6 +66,12 @@ namespace SmartBinManager.Models
         public int TriggerActionId { get; set; }
         [Display(Name = "Re Order Level")]
         public int ReOrderLevel { get; set; }
+
+        [Display(Name = "Product Name")]
+        public string ProductName { get; set; }
+
+        [Display(Name = "Trigger")]
+        public string TriggerActionName { get; set; }
     }
 
     public class BasketLineViewModel
@@ -74,5 +81,10 @@ namespace SmartBinManager.Models
 
         [Display(Name = "Quantity")]
         public int Quantity { get; set; }
+
+        [Display(Name = "Product Name")]
+        public string ProductName { get; set; }
     }
+
+    
 }
