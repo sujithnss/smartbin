@@ -8,7 +8,7 @@ exports.selectSmartBinById = function(smartbinid,callback)
                 .then(function()
                 {
                                 var request = new sqlDb.Request(conn);
-                                request.input('Id', sqlDb.VarChar(1000), smartbinid);
+                                request.input('Id', sqlDb.VarChar(100), smartbinid);
                                 request.execute('SmartBinGetById').then(function(recordsets) {
                                                 callback(recordsets);
                                 }).catch(function(err) {
@@ -82,7 +82,7 @@ var conn = new sqlDb.Connection(settings.dbConfig);
                 .then(function()
                 {
                                 var request = new sqlDb.Request(conn);
-                                request.input('Id', sqlDb.VarChar(1000), smartbin.Id);
+                                request.input('Id', sqlDb.VarChar(100), smartbin.Id);
                                 request.input('ProductId', sqlDb.Int, smartbin.ProductId);
                                 request.input('ReOrderLevel', sqlDb.Int, smartbin.ReOrderLevel);
                                 request.input('OrderQuantity', sqlDb.Int, smartbin.OrderQuantity);
@@ -245,7 +245,7 @@ var conn = new sqlDb.Connection(settings.dbConfig);
                 .then(function()
                 {
                                 var request = new sqlDb.Request(conn);
-                                request.input('SmartBinId', sqlDb.VarChar(1000), id);
+                                request.input('SmartBinId', sqlDb.VarChar(100), id);
                                 request.input('Weight', sqlDb.Int, weight);
                                 request.input('UOM', sqlDb.Int, uom);
 
@@ -337,7 +337,7 @@ var conn = new sqlDb.Connection(settings.dbConfig);
                 .then(function()
                 {
                                 var request = new sqlDb.Request(conn);
-                                request.input('BasketId', sqlDb.Int, basket.BasketId);
+                                request.input('CustomerId', sqlDb.Int, basket.CustomerId);
                                 request.input('ProductId', sqlDb.Int, basket.ProductId);
                                 request.input('Quantity', sqlDb.Int, basket.Quantity);
 

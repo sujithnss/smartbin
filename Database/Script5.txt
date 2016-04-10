@@ -1,0 +1,68 @@
+ALTER TABLE dbo.SmartBin ALTER COLUMN Id NVARCHAR(100) NOT NULL 
+ALTER TABLE dbo.SmartBin ADD PRIMARY KEY (Id)
+
+GO
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[BasketLineInsert]    Script Date: 04/10/2016 17:48:57 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[BasketLineInsert]
+	-- Add the parameters for the stored procedure here
+	@CustomerId int
+           ,@ProductId int
+           ,@Quantity int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+DECLARE @TempBasketId INT
+
+SELECT @TempBasketId = Id FROM dbo.Basket WHERE CustomerId = @CustomerId AND IsActive = 1
+
+IF(@TempBasketId IS NULL OR @TempBasketId < 0)
+BEGIN
+INSERT INTO [dbo].[Basket]
+           ([Name]
+           ,[CustomerId]
+           ,[IsActive]
+           ,[CreatedDateTime])
+     VALUES
+           ('mybasket'
+           ,@CustomerId
+           ,1
+           ,GETUTCDATE())
+           
+       SELECT @TempBasketId = Id FROM dbo.Basket WHERE CustomerId = @CustomerId AND IsActive = 1  
+ 
+END
+
+
+IF(@TempBasketId > 0)
+BEGIN
+		DECLARE @productcount INT
+		SELECT @productcount = COUNT(ProductId) FROM [dbo].[BasketLine] WHERE BasketId = @TempBasketId AND ProductId = @ProductId
+    IF(@productcount IS NULL OR @productcount <=0)   
+    BEGIN
+       INSERT INTO [dbo].[BasketLine]
+           ([BasketId]
+           ,[ProductId]
+           ,[Quantity])
+     VALUES
+           (@TempBasketId 
+           ,@ProductId 
+           ,@Quantity ) 
+     END
+END
+
+END
