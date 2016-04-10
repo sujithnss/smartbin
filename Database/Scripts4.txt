@@ -1,0 +1,30 @@
+
+GO
+/****** Object:  StoredProcedure [dbo].[SmartBinLogGetById]    Script Date: 04/10/2016 10:17:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[SmartBinLogGetById] 
+	-- Add the parameters for the stored procedure here
+	@CustomerId INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT [SmartBinId]
+      ,[CustomerId]
+      ,[Weight]
+      ,[UOM]
+      ,[CreatedDateTime]
+  FROM [dbo].[SmartBinLog]
+  WHERE CustomerId = @CustomerId
+END

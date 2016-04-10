@@ -56,7 +56,7 @@ exports.getSmartBinLogById = function(id,callback)
                 .then(function()
                 {
                                 var request = new sqlDb.Request(conn);
-                                request.input('SmartBinId', sqlDb.VarChar(4000), id);
+                                request.input('CustomerId', sqlDb.Int, id);
                                 request.execute('SmartBinLogGetById').then(function(recordsets) {
                                                 callback(recordsets);
                                 }).catch(function(err) {
