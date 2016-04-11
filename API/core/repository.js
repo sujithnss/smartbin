@@ -164,6 +164,30 @@ exports.getCustomerById = function(customerid,callback)
                 );
 };
 
+
+exports.getProductById = function(productid,callback)
+{
+                var conn = new sqlDb.Connection(settings.dbConfig);
+                conn.connect()
+                .then(function()
+                {
+                                var request = new sqlDb.Request(conn);
+                                request.input('ProductId', sqlDb.Int, productid);
+                                request.execute('ProductGetById').then(function(recordsets) {
+                                                callback(recordsets);
+                                }).catch(function(err) {
+                                                // ... error checks
+                                                console.log(err);
+                                });
+                }
+                )
+
+                .catch(function(err) {
+                console.log(err);
+                callback(null,err);
+                }
+                );
+};
 exports.customerAuthenticate = function(customer,callback)
 {
                 var conn = new sqlDb.Connection(settings.dbConfig);
