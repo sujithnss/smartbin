@@ -11,9 +11,15 @@ notificationrouter.use(function (req, res, next) {
 
 
 
-notificationrouter.post('/notification',function(req,res)
+notificationrouter.post('/notification/log',function(req,res)
 {
    notificationprovider.insertNotification(req,res);
 });
+
+notificationrouter.post('/notification',function(req,res)
+{
+   notificationprovider.sendNotification(req,res);
+});
+
 
 module.exports = notificationrouter;
