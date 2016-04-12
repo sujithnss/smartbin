@@ -431,5 +431,35 @@ exports.getBasketLine = function(customerid,callback)
                 );
 };
 
+exports.postBasketLine = function(productid,customerid,quantity,callback)
+{
+
+var conn = new sqlDb.Connection(settings.dbConfig);
+                conn.connect()
+                .then(function()
+                {
+                                var request = new sqlDb.Request(conn);
+                                request.input('CustomerId', sqlDb.Int, customerid);
+                                request.input('ProductId', sqlDb.Int, productid);
+                                request.input('Quantity', sqlDb.Int, quantity);
+
+                                request.execute('BasketLineInsert').then(function(recordsets) {
+
+                                                //console.dir(recordsets);
+                                                callback(recordsets);
+                                }).catch(function(err) {
+                                                // ... error checks
+                                                console.log(err);
+                                });
+                }
+                )
+
+                .catch(function(err) {
+                console.log(err);
+                callback(null,err);
+                }
+                );
+};
+
 
 

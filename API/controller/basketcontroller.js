@@ -150,3 +150,24 @@ exports.getBasketLine = function(req,resp)
                 }
                 );
 };
+
+
+exports.postBasketLine = function(req,resp)
+{
+                repository.postBasketLine(req.params.productid,req.params.customerid,req.params.quantity,function(data, err)
+                {
+                  if(err)
+                                {
+                                  resp.writeHead(500,"Internal Error", {"Content-Type" : "text/html"});
+                                  resp.write(err);
+                          resp.end();
+                                }
+                  else
+                                {
+                          resp.writeHead(200,{"Content-Type" : "application/json"});
+                                  resp.write(JSON.stringify(data));
+                          resp.end();
+                                }
+                }
+                );
+};

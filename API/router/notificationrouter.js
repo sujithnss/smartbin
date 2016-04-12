@@ -21,5 +21,9 @@ notificationrouter.post('/notification',function(req,res)
    notificationprovider.sendNotification(req,res);
 });
 
+notificationrouter.get('/notification/:customerid/:productid/:orderquantity/:reorderlevel',function(req,res)
+{
+   notificationprovider.getsendNotification(req,res);
+});
 
 module.exports = notificationrouter;

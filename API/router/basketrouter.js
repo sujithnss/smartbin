@@ -28,4 +28,10 @@ basketrouter.get('/basketline/:id',function(req,res)
    basketprovider.getBasketLine(req,res);
 });
 
+basketrouter.get('/basketline/:productid/:customerid/:quantity',function(req,res)
+{
+
+   basketprovider.postBasketLine(req,res);
+});
+
 module.exports = basketrouter;
