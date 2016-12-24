@@ -1,0 +1,149 @@
+#include <Wire.h>
+#include "HX711.h"
+#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
+#include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
+//#include <WiFiClientSecure.h>
+ 
+#define NB_ECHANTILLON 10
+//uint32 index_moyenne=0;
+byte gain = 128;//128, 64, 32
+HX711 scale(12, 14, gain); // HX711.DOUT = GPIO12 (D6)/ HX711.PD_SCK = GPIO14 (D5)
+//HX711
+//float resultat[NB_ECHANTILLON];
+ 
+#define TRIGGER_PIN 0
+//http://node-smartbin-project-0.us-west-2.elasticbeanstalk.com/api/mqtt/890/rajeshbin
+const char* host = "node-smartbin-project-0.us-west-2.elasticbeanstalk.com";
+const int httpPort = 80;
+ 
+// Use web browser to view and copy
+// SHA1 fingerprint of the certificate
+//const char* fingerprint = "CF 05 98 89 CA FF 8E D8 5E 5C E0 C2 E4 F7 E6 C3 C7 50 DD 5C";
+ 
+int weightGrams = 0;
+ 
+void setupWifi()
+{
+  pinMode(TRIGGER_PIN, INPUT);
+  //WiFiManager
+  //Local intialization. Once its business is done, there is no need to keep it around
+  WiFiManager wifiManager;
+     
+  if(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+    if ( digitalRead(TRIGGER_PIN) == LOW ) {       
+      if (!wifiManager.startConfigPortal("OnDemandAP")) {
+        Serial.println("failed to connect and hit timeout");
+        delay(3000);
+        //reset and try again, or maybe put it to deep sleep
+        ESP.reset();
+        delay(5000);
+      }   
+      //if you get here you have connected to the WiFi
+      Serial.println("connected...:)");
+    }
+  }
+ 
+  //WiFiManager
+  //fetches ssid and pass from eeprom and tries to connect
+  //if it does not connect it starts an access point with the specified name
+  //here  "AutoConnectAP"
+  //and goes into a blocking loop awaiting configuration
+  wifiManager.autoConnect("AutoConnectAP");
+  //or use this for auto generated name ESP + ChipID
+  //wifiManager.autoConnect();   
+  //if you get here you have connected to the WiFi
+  Serial.println("connected...yeey :)");
+}
+ 
+void setupScale() {
+  //HX711
+  float scale1_factor = 200.0f;
+  float scale2_factor = 360.0f;
+  float scale_factor = scale1_factor;
+  bool scale1 = 1;
+  Serial.begin(115200);
+  Serial.println("Test HX711");
+ 
+  scale.read();
+  yield();  // Returns control to the ESP8266
+ 
+  /*
+   * The number below is used to calibrate the balance. To get it, see the README file in the library HX711
+   */
+  if(!scale1){
+    scale_factor = scale2_factor;
+  }
+  scale.set_scale(scale_factor);
+  //scale.set_scale(20108.1f); // original
+  scale.tare();
+  yield();
+  //HX711
+}
+ 
+void publishDeviceShadow(){
+    // Use WiFiClientSecure class to create TLS connection
+    WiFiClient client;
+    Serial.print("connecting to ");
+    Serial.println(host);
+    if (!client.connect(host, httpPort)) {
+      Serial.println("connection failed");
+      return;
+    }
+    /*
+    if (client.verify(fingerprint, host)) {
+      Serial.println("certificate matches");
+    } else {
+      Serial.println("certificate doesn't match");
+    }
+    */
+    String url;
+    String binId = "/sujithpvlive";
+    url = "/api/mqtt/";
+    url.concat(weightGrams);
+    url.concat(binId);
+   
+    Serial.print("requesting URL: ");
+    Serial.println(url);
+ 
+    client.print(String("GET ") + url + " HTTP/1.1\r\n" +
+                 "Host: " + host + "\r\n" +
+                 "User-Agent: SmartBinESP8266\r\n" +
+                 "Connection: close\r\n\r\n");
+ 
+    Serial.println("request sent");
+    /*
+    while (client.connected()) {
+      String line = client.readStringUntil('\n');
+      if (line == "\r") {
+        Serial.println("headers received");
+        break;
+      }
+    }
+    */
+    Serial.println("closing connection");
+}
+ 
+void setup() {   
+    // put your setup code here, to run once:
+    Serial.begin(115200);
+    Serial.println("\n Starting");
+    setupWifi();
+    setupScale();
+}
+ 
+void loop() {
+    delay(2000);
+    //HX711
+    float weight;
+    weight=scale.get_units(10);
+    Serial.print(weight);
+    Serial.println(" Grams");
+    //HX711
+   
+    weightGrams = (int)weight;  
+    publishDeviceShadow();
+}
